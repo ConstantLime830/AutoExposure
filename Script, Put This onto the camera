@@ -1,0 +1,35 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public class AutoExposiure : MonoBehaviour
+{
+    public Volume NrmVolume, ExposedVolume;
+    public Light sun;
+    public GameObject SightEnd;
+
+    public LayerMask OpaqueLayers;
+
+    public float SightDist = 5;
+
+    private void Update()
+    {
+        RaycastHit hit;
+        if(Physics.Raycast(SightEnd.transform.position, -sun.transform.forward, out hit, SightDist, OpaqueLayers))
+        {
+            NrmVolume.weight -= .5f * Time.deltaTime;
+            ExposedVolume.weight += .5f * Time.deltaTime;
+        }else
+        {
+            NrmVolume.weight += .5f * Time.deltaTime;
+            ExposedVolume.weight -= .5f * Time.deltaTime;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(transform.position, SightEnd.transform.position);
+        Gizmos.DrawLine(SightEnd.transform.position, -sun.transform.forward);
+    }
+}
